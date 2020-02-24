@@ -266,7 +266,40 @@ begin
 
 					end case;
 
+					if isStateExit = '1' and delayedCycles < cyclesToDelay then
+
+						delayedCycles <= delayedCycles + '1';
+						state <= stWritePrep;
+
+					elsif isStateExit = "1" then
+
+						state <= stWrite;
+						delayedCycles <= (others => '0');
+						stepCount <= (others => '0');
+						prevStepCount <= (others => '0');
+
+					elsif delayedCycles < cyclesToDelay then
+
+						delayedCycles <= delayedCycles + '1';
+						state <= stWritePrep;
+
+					else
+
+						delayedCycles <= (others => '0');
+						stepCount <= stepCount + '1';
+						prevStepCount <= stepCount;
+
+						outputData <= dataToOutput;
+						outputEnable <= enableToOutput;
+						outputRegisterSelect <= registerSelectToOutput;
+						outputWrite <= writeToOutput;
+
+						state <= stWritePrep;
+
+					end if;
+
 				when stWrite =>
+					
 
 			end case;
 
