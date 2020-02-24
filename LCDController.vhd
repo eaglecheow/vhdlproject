@@ -45,7 +45,7 @@ end LCDController;
 
 architecture Behavioral of LCDController is
 
-	type StateType is (stInit, stWritePrep, stWrite);
+	type StateType is (stInit, stWritePrep, stCharPrep, stWrite);
 	signal state : StateType;
 
 	signal outputData : std_logic_vector(3 downto 0) := (others => '0');
@@ -64,7 +64,16 @@ architecture Behavioral of LCDController is
 	signal registerSelectToOutput : std_logic := '0';
 	signal isStateExit : std_logic := '0';
 
+	signal inputData: std_logic_vector(23 downto 0) := (others => '0');
+	signal characterWritten: std_logic_vector(3 downto 0) := (others => '0');
+	signal characterToWrite: std_logic_vector(7 downto 0) := (others => '0');
+
 begin
+
+	DataOut <= outputData;
+	LcdEnable <= outputEnable;
+	LcdReadWrite <= outputWrite;
+	LcdRegisterSelect <= outputRegisterSelect;
 
 	process (Clock)
 	begin
@@ -191,6 +200,7 @@ begin
 						delayedCycles <= (others => '0');
 						stepCount <= (others => '0');
 						prevStepCount <= (others => '0');
+						isStateExit <= '0';
 
 					elsif delayedCycles < cyclesToDelay then
 
@@ -217,52 +227,59 @@ begin
 					case prevStepCount is
 
 						when "00000" =>
-							cyclesToDelay <= "100";
+							cyclesToDelay <= "00000000000000000100";
 							
 							dataToOutput <= "0000";
 							writeToOutput <= '0';
 							registerSelectToOutput <= '0';
 
 						when "00001" =>
-							cyclesToDelay <= "10";
+							cyclesToDelay <= "00000000000000000010";
 
 							enableToOutput <= '1';
 
 						when "00010" =>
-							cyclesToDelay <= "1100";
+							cyclesToDelay <= "00000000000000001100";
 
 							enableToOutput <= '0';
 
 						when "00011" =>
-							cyclesToDelay <= "01";
+							cyclesToDelay <= "00000000000000000001";
 
 							dataToOutput <= (others => '0');
 							writeToOutput <= '1';
 							registerSelectToOutput <= '0';
 
 						when "00100" =>
-							cyclesToDelay <= "00110010";
+							cyclesToDelay <= "00000000000000110010";
 
 							dataToOutput <= "0001";
 							writeToOutput <= '0';
 							registerSelectToOutput <= '0';
 
 						when "00101" =>
-							cyclesToDelay <= "10";
+							cyclesToDelay <= "00000000000000000010";
 
 							enableToOutput <= '1';
 
 						when "00110" =>
-							cyclesToDelay <= "1100";
+							cyclesToDelay <= "00000000000000001100";
 
 							enableToOutput <= '0';
 
 						when "00111" =>
-							cyclesToDelay <= "01";
+							cyclesToDelay <= "00000000000000000001";
 
 							dataToOutput <= (others => '0');
 							writeToOutput <= '1';
 							registerSelectToOutput <= '0';
+
+						when "01000" =>
+							cyclesToDelay <= "00000000011111010000";
+
+							isStateExit <= '1';
+							
+						when others =>
 
 					end case;
 
@@ -271,12 +288,14 @@ begin
 						delayedCycles <= delayedCycles + '1';
 						state <= stWritePrep;
 
-					elsif isStateExit = "1" then
+					elsif isStateExit = '1' then
 
-						state <= stWrite;
+						state <= stCharPrep;
 						delayedCycles <= (others => '0');
 						stepCount <= (others => '0');
 						prevStepCount <= (others => '0');
+						isStateExit <= '0';
+						inputData <= DataIn;
 
 					elsif delayedCycles < cyclesToDelay then
 
@@ -298,8 +317,145 @@ begin
 
 					end if;
 
+				when stCharPrep =>
+
+					state <= stWrite;
+
+					case characterWritten is
+
+						when "0000" =>
+							characterToWrite <= "0011" & inputData(23 downto 20);
+
+						when "0001" =>
+							characterToWrite <= "0011" & inputData(19 downto 16);
+
+						when "0010" =>
+							characterToWrite <= "0011" & inputData(15 downto 12);
+
+						when "0011" =>
+							characterToWrite <= "0011" & inputData(11 downto 8);
+
+						when "0100" =>
+							characterToWrite <= "00101110";
+
+						when "0101" =>
+							characterToWrite <= "0011" & inputData(7 downto 4);
+
+						when "0110" =>
+							characterToWrite <= "0011" & inputData(3 downto 0);
+
+						when "0111" =>
+							characterToWrite <= "11011111";
+
+						when "1000" =>
+							characterToWrite <= "01000011";
+
+						when "1001" =>
+
+							characterToWrite <= (others => '0');
+							characterWritten <= (others => '0');
+							state <= stWritePrep;
+
+						when others =>
+
+					end case;
+
 				when stWrite =>
-					
+
+					case prevStepCount is
+
+						when "00000" =>
+							cyclesToDelay <= "00000000000000000100";
+
+							dataToOutput <= characterToWrite(7 downto 4);
+							writeToOutput <= '0';
+							registerSelectToOutput <= '1';
+
+						when "00001" =>
+							cyclesToDelay <= "00000000000000000010";
+
+							enableToOutput <= '1';
+
+						when "00010" =>
+							cyclesToDelay <= "00000000000000001100";
+
+							enableToOutput <= '0';
+
+						when "00011" =>
+							cyclesToDelay <= "00000000000000000001";
+
+							dataToOutput <= (others => '0');
+							writeToOutput <= '1';
+							registerSelectToOutput <= '0';
+
+						when "00100" =>
+							cyclesToDelay <= "00000000000000110010";
+
+							dataToOutput <= characterToWrite(3 downto 0);
+							writeToOutput <= '0';
+							registerSelectToOutput <= '1';
+
+						when "00101" =>
+							cyclesToDelay <= "00000000000000000010";
+
+							enableToOutput <= '1';
+
+						when "00110" =>
+							cyclesToDelay <= "00000000000000001100";
+
+							enableToOutput <= '0';
+
+						when "00111" =>
+							cyclesToDelay <= "00000000000000000001";
+
+							dataToOutput <= (others => '0');
+							writeToOutput <= '1';
+							registerSelectToOutput <= '0';
+
+						when "01000" =>
+							cyclesToDelay <= "00000000011111010000";
+
+							isStateExit <= '1';
+
+						when others =>
+
+					end case;
+
+					if isStateExit = '1' and delayedCycles < cyclesToDelay then
+
+						delayedCycles <= delayedCycles + '1';
+						state <= stWrite;
+
+					elsif isStateExit = '1' then
+
+						state <= stCharPrep;
+						delayedCycles <= (others => '0');
+						stepCount <= (others => '0');
+						prevStepCount <= (others => '0');
+						isStateExit <= '0';
+
+						inputData <= DataIn;
+						characterWritten <= characterWritten + '1';
+
+					elsif delayedCycles < cyclesToDelay then
+
+						delayedCycles <= delayedCycles + '1';
+						state <= stWrite;
+
+					else
+
+						delayedCycles <= (others => '0');
+						stepCount <= stepCount + '1';
+						prevStepCount <= stepCount;
+
+						outputData <= dataToOutput;
+						outputEnable <= enableToOutput;
+						outputRegisterSelect <= registerSelectToOutput;
+						outputWrite <= writeToOutput;
+
+						state <= stWrite;
+
+					end if;
 
 			end case;
 

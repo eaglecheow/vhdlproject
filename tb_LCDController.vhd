@@ -96,6 +96,10 @@ BEGIN
 
       -- insert stimulus here 
 
+      wait for 20 ms;
+
+      DataIn <= "000000000010001001110101";
+
       wait;
    end process;
 
