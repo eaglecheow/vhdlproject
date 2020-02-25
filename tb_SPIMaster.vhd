@@ -63,7 +63,8 @@ ARCHITECTURE behavior OF tb_SPIMaster IS
 
    -- Clock period definitions
 --   constant SCLK_period : time := 10 ns;
-   constant CLK_period : time := 10 ns;
+   constant CLK_period : time := 20 ns;
+   constant data : std_logic_vector(15 downto 0) := "1010010111110000";
  
 BEGIN
  
@@ -102,6 +103,17 @@ BEGIN
       wait for 100 ns;	
 
 --      wait for SCLK_period*10;
+
+      wait until falling_edge(CS);
+
+      for i in 0 to 15 loop
+
+         MISO <= data(i);
+         wait for 280 ns;
+
+      end loop;
+
+      MISO <= '0';
 
       -- insert stimulus here 
 

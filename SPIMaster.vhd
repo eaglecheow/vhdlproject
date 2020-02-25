@@ -43,7 +43,7 @@ architecture Behavioral of SPIMaster is
 
 signal iClockDiv: std_logic_vector(3 downto 0) := (others => '0');
 signal iClock: std_logic := '0';
-type StateType is (stIdle, stData, stStop);
+type StateType is (stIdle, stData);
 signal state: StateType;
 signal iNoBitsReceived: std_logic_vector(5 downto 0) := (others => '0');
 signal iBuffer: std_logic_vector(15 downto 0) := (others => '0');
@@ -55,7 +55,7 @@ begin
 	begin
 		if rising_edge(CLK) then
 		
-			if iClockDiv = "1100" then
+			if iClockDiv > "1100" then
 			
 				iClockDiv <= (others => '0');
 				
@@ -84,6 +84,8 @@ begin
 			
 				when stIdle =>
 					CS <= '0';
+					iBuffer <= iBuffer(14 downto 0) & MISO;
+					iNoBitsReceived <= iNoBitsReceived + '1';
 					state <= stData;
 					
 				when stData =>
@@ -97,14 +99,11 @@ begin
 					else
 					
 						DOUT <= iBuffer;
-						state <= stStop;
+						iBuffer <= (others => '0'); 
+						iNoBitsReceived <= (others => '0');
+						state <= stIdle;
 					
 					end if;
-					
-				when stStop =>
-					iBuffer <= (others => '0');
-					iNoBitsReceived <= (others => '0');
-					state <= stIdle;
 			
 			end case;
 		
