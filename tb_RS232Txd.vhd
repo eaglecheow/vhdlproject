@@ -86,9 +86,10 @@ BEGIN
       -- hold reset state for 100 ns.
       wait for 100 ns;	
 
-      wait for Clk_period*10;
+      wait for Clk_period*100;
 
       -- insert stimulus here 
+      DataIn <= "000000010010001001110101";
 
       wait;
    end process;
