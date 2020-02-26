@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -o "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_SPIMaster_isim_beh.exe" -prj "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_SPIMaster_beh.prj" "work.tb_SPIMaster" 
+-intstyle "ise" -incremental -o "C:/Users/user/Desktop/VHLDProject/Attempt3/hwtest_LCDController_isim_beh.exe" -prj "C:/Users/user/Desktop/VHLDProject/Attempt3/hwtest_LCDController_beh.prj" "work.hwtest_LCDController" 
