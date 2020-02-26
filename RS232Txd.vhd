@@ -150,8 +150,8 @@ begin
                 when stSendChar =>
                     if numBitsSent < "1010" then
 
-                        outputData <= characterToSend(9);
-                        characterToSend <= characterToSend(8 downto 0) & '1';
+                        outputData <= characterToSend(0);
+                        characterToSend <= '1' & characterToSend(9 downto 1);
                         numBitsSent <= numBitsSent + '1';
                         state <= stSendChar;
 

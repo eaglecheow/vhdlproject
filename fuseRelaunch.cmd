@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -o "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_RS232Txd_isim_beh.exe" -prj "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_RS232Txd_beh.prj" "work.tb_RS232Txd" 
+-intstyle "ise" -incremental -o "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_Display_isim_beh.exe" -prj "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_Display_beh.prj" "work.tb_Display" 
