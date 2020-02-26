@@ -39,7 +39,9 @@ end RS232Txd;
 
 architecture Behavioral of RS232Txd is
 
-    signal clockDivider: std_logic_vector(3 downto 0) := (others => '0');
+    signal clockDivider1: std_logic_vector(8 downto 0) := (others => '0');
+    signal clockDivider2: std_logic_vector(3 downto 0) := (others => '0');
+
     signal internalClock: std_logic := '0';
     type StateType is (stIdle, stPrepChar, stSendChar);
     signal state: StateType;
@@ -58,14 +60,33 @@ begin
 
         if rising_edge(Clk) then
 
-            clockDivider <= clockDivider + '1';
+            if clockDivider1 < "101000101" then
+
+                clockDivider1 <= clockDivider1 + '1';
+
+            else
+
+                clockDivider1 <= (others => '0');
+
+            end if;
+
+        end if;
+
+    end process;
+
+    process(clockDivider1(8))
+    begin
+
+        if rising_edge(clockDivider1(8)) then
+
+            clockDivider2 <= clockDivider2 + '1';
 
         end if;
 
     end process;
 
 
-    internalClock <= clockDivider(3);
+    internalClock <= clockDivider2(3);
 
     Txd <= outputData;
 
