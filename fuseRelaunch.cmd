@@ -1,1 +1,1 @@
--intstyle "ise" -incremental -o "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_Display_isim_beh.exe" -prj "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_Display_beh.prj" "work.tb_Display" 
+-intstyle "ise" -incremental -o "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_DirectTemperatureReader_isim_beh.exe" -prj "C:/Users/user/Desktop/VHLDProject/Attempt3/tb_DirectTemperatureReader_beh.prj" "work.tb_DirectTemperatureReader" 

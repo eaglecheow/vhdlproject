@@ -326,7 +326,7 @@ begin
 							dataToOutput <= (others => '0');
 							writeToOutput <= '1';
 							registerSelectToOutput <= '0';
-						when "100000" =>
+						when "101000" =>
 							cyclesToDelay <= "00000000011111010000";
 
 							isStateExit <= '1';
