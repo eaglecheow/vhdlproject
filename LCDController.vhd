@@ -372,7 +372,7 @@ begin
 					case prevStepCount is
 
 						when "000000" =>
-							cyclesToDelay <= "00000000000000000100";
+							cyclesToDelay <= "00001000000000000100";
 
 							dataToOutput <= "0000";
 							writeToOutput <= '0';

@@ -52,7 +52,7 @@ end DirectTemperatureReader;
 
 architecture Behavioral of DirectTemperatureReader is
 
-    component SPIMaster is
+    component SPIController is
         
         port (
             SCLK: out std_logic;
@@ -142,7 +142,7 @@ begin
         Txd => RS232_Txd
     );
 
-    u4: SPIMaster port map (
+    u4: SPIController port map (
         SCLK => SPI_Sclk,
         MISO => SPI_In,
         MOSI => SPI_Out,

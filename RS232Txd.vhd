@@ -109,37 +109,37 @@ begin
                     case numCharacterSent is
 
                         when "0000" =>
-                            characterToSend <= '0' & "0011" & inputData(23 downto 20) & '1';
+                            characterToSend <= '1' & "0011" & inputData(23 downto 20) & '0';
 
                         when "0001" =>
-                            characterToSend <= '0' & "0011" & inputData(19 downto 16) & '1';
+                            characterToSend <= '1' & "0011" & inputData(19 downto 16) & '0';
 
                         when "0010" =>
-                            characterToSend <= '0' & "0011" & inputData(15 downto 12) & '1';
+                            characterToSend <= '1' & "0011" & inputData(15 downto 12) & '0';
 
                         when "0011" =>
-                            characterToSend <= '0' & "0011" & inputData(11 downto 8) & '1';
+                            characterToSend <= '1' & "0011" & inputData(11 downto 8) & '0';
 
                         when "0100" =>
-                            characterToSend <= "0001011101"; -- Send character "."
+                            characterToSend <= "1001011100"; -- Send character "."
 
                         when "0101" =>
-                            characterToSend <= '0' & "0011" & inputData(7 downto 4) & '1';
+                            characterToSend <= '1' & "0011" & inputData(7 downto 4) & '0';
 
                         when "0110" =>
-                            characterToSend <= '0' & "0011" & inputData(3 downto 0) & '1';
+                            characterToSend <= '1' & "0011" & inputData(3 downto 0) & '0';
 
                         when "0111" =>
-                            characterToSend <= "0101110101"; -- Send character "º"
+                            characterToSend <= "1101110100"; -- Send character "º"
 
                         when "1000" =>
-                            characterToSend <= "0010000111"; -- Send character "C"
+                            characterToSend <= "1010000110"; -- Send character "C"
 
                         when "1001" =>
-                            characterToSend <= "0000010101"; -- Send character "\n"
+                            characterToSend <= "1000010100"; -- Send character "\n"
 
                         when "1010" =>
-                            characterToSend <= "0000011011"; -- Send character "\r"
+                            characterToSend <= "1000011010"; -- Send character "\r"
 
                         when others =>
                             characterToSend <= (others => '0');

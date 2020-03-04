@@ -47,16 +47,32 @@ end LEDController;
 architecture Behavioral of LEDController is
 
     signal iClock : std_logic_vector(2 downto 0) := (others => '0');
+	 signal clockDivider: std_logic_vector(3 downto 0) := (others => '0');
+	 signal slowClock: std_logic := '0';
+	 
     signal inputData : std_logic_vector(23 downto 0) := (others => '0');
     signal displayDigit : std_logic_vector(3 downto 0) := (others => '0');
     signal sevenSegmentDisplay : std_logic_vector(6 downto 0) := (others => '0');
 
 begin
 
-    process (Clock)
+	 process (Clock)
+	 begin
+	 
+		  if rising_edge(Clock) then
+		  
+			   clockDivider <= clockDivider + '1';
+		  
+		  end if;
+	 
+	 end process;
+	 
+	 slowClock <= clockDivider(3);
+
+    process (slowClock)
     begin
 
-        if rising_edge(Clock) then
+        if rising_edge(slowClock) then
 
             iClock <= iClock + '1';
 
@@ -72,12 +88,12 @@ begin
     end process;
 
     with iClock select
-        An <= "011111" when "001",
-        "101111" when "010",
-        "110111" when "011",
-        "111011" when "100",
-        "111101" when "101",
-        "111110" when "110",
+        An <= "011111" when "000",
+        "101111" when "001",
+        "110111" when "010",
+        "111011" when "011",
+        "111101" when "100",
+        "111110" when "101",
         "111111" when others;
 
     with iClock select
